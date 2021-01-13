@@ -9,41 +9,83 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { create } = require("domain");
 
-function team() {
-    inquirer
+function buildTeam() {
+    function start() {
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: `What is your manager's name?`,
+                    name: 'managerName',
+                },
+                {
+                    type: 'input',
+                    message: `What is your manager's ID?`,
+                    name: 'managerId',
+                },
+                {
+                    type: 'input',
+                    message: `What is your manager's email?`,
+                    name: 'managerEmail',
+                },
+                {
+                    type: 'input',
+                    message: `What is your manager's office number?`,
+                    name: 'officeNumber',
+                },
+            ])
+            .then(response => {
+                const newManager = new Manager(response.managerName, response.managerId, response.managerEmail, response.officeNumber)
+                console.log(newManager)
+                team.push(newManager)
+                newMember()
+            });
+    }
+    function newMember() {
+        inquirer
         .prompt([
             {
-                type: 'input',
-                message: `What is your manager's name?`,
-                name: 'managerName',
-            },
-            {
-                type: 'input',
-                message: `What is your manager's ID?`,
-                name: 'managerID',
-            },
-            {
-                type: 'input',
-                message: `What is your manager's email?`,
-                name: 'managerEmail',
+                type: "list",
+                message: "Would you like to add a new team member?",
+                choices: ["engineer", "intern", "quit"],
+                name: "newEmployee",
             },
         ])
         .then(response => {
-            const newManager = new Manager(response.managerName, response.managerId, response.managerEmail)
-            console.log(newManager)
-
-        // console.log(response.managerName);
-        // console.log(response.managerID);
-        // console.log(response.managerEmail)
-        // response.confirm === response.password
-        // console.log('Success!'),
-        // console.log('You forgot your password already?!')
-        });
+            switch(response.newEmployee) {
+                case "engineer":
+                    newEngineer();
+                break;
+                case "intern":
+                    newIntern();
+                break;
+                case "quit":
+                    create();
+                break;
+            }
+        })
     }
-team();
+    function newEngineer() {
+
+    }
+    function newIntern() {
+
+    }
+    function create() {
+        fs.writeFile(outputPath, render(team), function (err) {
+            if (err) throw err;
+            console.log('Saved!');
+          }); 
+    }
+    start();
+}
+buildTeam();
 
 // Write code to use inquirer to gather information about the development team members,
+var team = []
+var id = []
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 // After the user has input all employees desired, call the `render` function (required
