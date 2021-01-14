@@ -123,7 +123,7 @@ function buildTeam() {
                 },
             ])
             .then(response => {
-                const newIntern = new Intern(response.internName, response.internId, response.managerEmail, response.officeNumber)
+                const newIntern = new Intern(response.internName, response.internId, response.internEmail, response.school)
                 console.log(newIntern)
                 team.push(newIntern)
                 newMember()
