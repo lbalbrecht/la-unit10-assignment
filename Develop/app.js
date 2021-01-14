@@ -45,39 +45,95 @@ function buildTeam() {
     }
     function newMember() {
         inquirer
-        .prompt([
-            {
-                type: "list",
-                message: "Would you like to add a new team member?",
-                choices: ["engineer", "intern", "quit"],
-                name: "newEmployee",
-            },
-        ])
-        .then(response => {
-            switch(response.newEmployee) {
-                case "engineer":
-                    newEngineer();
-                break;
-                case "intern":
-                    newIntern();
-                break;
-                case "quit":
-                    create();
-                break;
-            }
-        })
+            .prompt([
+                {
+                    type: "list",
+                    message: "Would you like to add a new team member?",
+                    choices: ["engineer", "intern", "quit"],
+                    name: "newEmployee",
+                },
+            ])
+            .then(response => {
+                switch (response.newEmployee) {
+                    case "engineer":
+                        newEngineer();
+                        break;
+                    case "intern":
+                        newIntern();
+                        break;
+                    case "quit":
+                        create();
+                        break;
+                }
+            })
     }
     function newEngineer() {
-
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: `What is your engineer's name?`,
+                    name: 'engineerName',
+                },
+                {
+                    type: 'input',
+                    message: `What is your engineer's ID?`,
+                    name: 'engineerId',
+                },
+                {
+                    type: 'input',
+                    message: `What is your engineer's email?`,
+                    name: 'engineerEmail',
+                },
+                {
+                    type: 'input',
+                    message: `What is your engineer's Github username?`,
+                    name: 'github',
+                },
+            ])
+            .then(response => {
+                const newEngineer = new Engineer(response.engineerName, response.engineerId, response.engineerEmail, response.github)
+                console.log(newEngineer)
+                team.push(newEngineer)
+                newMember()
+            });
     }
     function newIntern() {
-
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: `What is your intern's name?`,
+                    name: 'internName',
+                },
+                {
+                    type: 'input',
+                    message: `What is your intern's ID?`,
+                    name: 'internId',
+                },
+                {
+                    type: 'input',
+                    message: `What is your intern's email?`,
+                    name: 'internEmail',
+                },
+                {
+                    type: 'input',
+                    message: `Where does your intern go to school?`,
+                    name: 'school',
+                },
+            ])
+            .then(response => {
+                const newIntern = new Intern(response.internName, response.internId, response.managerEmail, response.officeNumber)
+                console.log(newIntern)
+                team.push(newIntern)
+                newMember()
+            });Engineer
     }
     function create() {
         fs.writeFile(outputPath, render(team), function (err) {
             if (err) throw err;
             console.log('Saved!');
-          }); 
+        });
     }
     start();
 }
